@@ -30,6 +30,7 @@ import StoreProduct from './src/screens/StoreProduct';
 
 import HomeScreen from './src/screens/Home';
 import ProductScreen from './src/screens/Product';
+import SearchBar from './src/components/search/search';
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -49,6 +50,7 @@ function App(): JSX.Element {
           contentInsetAdjustmentBehavior="automatic"
           style={backgroundStyle}>
           <HeaderEco />
+          <SearchBar />
           <NavigationContainer>
             <AllScreens />
           </NavigationContainer>
@@ -57,7 +59,7 @@ function App(): JSX.Element {
           {/* <ProductScreen /> */}
         </ScrollView>
       </SafeAreaView>
-        <Menu />
+      <Menu />
     </ThemeProvider>
   );
 }
