@@ -6,8 +6,7 @@ import MenuButton from '../components/menu/menuButton';
 import StoryHeader from '../components/story/storyHeader';
 import StoryProduct from '../components/story/storyProduct';
 import {GestureDetector} from 'react-native-gesture-handler';
-import { TapGestureHandler, State } from 'react-native-gesture-handler';
-
+import {TapGestureHandler, State} from 'react-native-gesture-handler';
 
 const StoreProduct = () => {
   const [store, setStore]: any = useState();
@@ -39,16 +38,15 @@ const StoreProduct = () => {
           onClose={() => {}}
         />
 
-
-          <StoryProduct
-            image={products[activeProduct]?.image}
-            name={products[activeProduct]?.name}
-            priceFrom={products[activeProduct]?.previousPrice}
-            price={products[activeProduct]?.price}
-            shareLink={products[activeProduct]?.link}
-          />
+        <StoryProduct
+          image={products[activeProduct]?.image}
+          name={products[activeProduct]?.name}
+          priceFrom={products[activeProduct]?.previousPrice}
+          price={products[activeProduct]?.price}
+          shareLink={products[activeProduct]?.link}
+        />
       </View>
-      <Text></Text>
+      <Text />
     </View>
   );
 };

@@ -3,19 +3,22 @@ import {Image, View} from 'react-native';
 import {getProduct} from '../services/get';
 import {Button, Text} from '@rneui/base';
 import MenuButton from '../components/menu/menuButton';
+import Layout from '../components/layout/layout';
 
-const ProductScreen = () => {
+const ProductScreen = ({route = {}}: any) => {
   const [product, setProduct]: any = useState();
+  const {id} = route.params || {};
 
   useEffect(() => {
     const getProducto = async () => {
-      const result = await getProduct('0752342a-d108-4d72-b518-6ddf1ab79633');
+      const result = await getProduct(id);
       setProduct(result.data.product);
     };
     getProducto();
-  }, []);
+  }, [id]);
+
   return (
-    <View>
+    <Layout>
       <View style={{paddingTop: 20}}>
         <View
           style={{
@@ -127,7 +130,7 @@ const ProductScreen = () => {
           </View>
         </View>
       </View>
-    </View>
+    </Layout>
   );
 };
 

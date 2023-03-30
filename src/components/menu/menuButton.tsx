@@ -3,10 +3,10 @@ import {Button} from '@rneui/base';
 import LinearGradient from 'react-native-linear-gradient';
 
 type MenuButtonProps = {
-  onPress: Function;
+  onPress: any;
   image: ImageSourcePropType;
-  imageWidth?: number
-  imageHeight?: number
+  imageWidth?: number;
+  imageHeight?: number;
   title: string;
   linearGradient: {
     colors: Array<string>;
@@ -21,7 +21,7 @@ const MenuButton = ({
   image,
   title,
   imageWidth = 25,
-  imageHeight = 25
+  imageHeight = 25,
 }: MenuButtonProps) => {
   return (
     <View
@@ -44,8 +44,12 @@ const MenuButton = ({
           margin: 0,
           position: 'relative',
         }}
-        linearGradientProps={linearGradient}>
-        <Image source={image} style={{width: imageWidth, height: imageHeight}} />
+        linearGradientProps={linearGradient}
+        onPress={onPress}>
+        <Image
+          source={image}
+          style={{width: imageWidth, height: imageHeight}}
+        />
       </Button>
     </View>
   );
