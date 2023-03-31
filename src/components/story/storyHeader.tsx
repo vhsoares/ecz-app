@@ -6,7 +6,7 @@ type StoryHeaderProps = {
   storeName: string;
   productAmount: number;
   activeProduct: number;
-  onClose: Function;
+  onClose: any;
 };
 
 const StoryHeader = ({
@@ -31,7 +31,7 @@ const StoryHeader = ({
             style={{
               borderRadius: 100,
               overflow: 'hidden',
-              borderColor: '#2a2a2a',
+              borderColor: '#CCC',
               borderStyle: 'solid',
               borderWidth: 1,
             }}>
@@ -40,6 +40,7 @@ const StoryHeader = ({
                 uri: 'https://economizei.com/api/' + storeImage,
                 width: 45,
               }}
+              resizeMode={'contain'}
               style={{maxWidth: '80%', height: 45, minWidth: 45}}
             />
           </View>
@@ -54,7 +55,8 @@ const StoryHeader = ({
               backgroundColor: 'transparent',
               height: 45,
               paddingHorizontal: 0,
-            }}>
+            }}
+            onPress={onClose}>
             <Image
               source={require('../../assets/images/Close.png')}
               style={{height: 15, minWidth: 15}}
@@ -78,7 +80,8 @@ const StoryHeader = ({
                   flex: 1,
                   height: 2,
                   margin: 4,
-                }}>
+                }}
+                key={index}>
                 <Text>{element}</Text>
               </View>
             );
@@ -90,7 +93,8 @@ const StoryHeader = ({
                   flex: 1,
                   height: 2,
                   margin: 4,
-                }}>
+                }}
+                key={index}>
                 <Text>{element}</Text>
               </View>
             );

@@ -4,7 +4,6 @@
  *
  * @format
  */
-
 import React from 'react';
 import {SafeAreaView, StatusBar, useColorScheme} from 'react-native';
 import {navigationRef} from './src/utils/RootNavigation';
