@@ -8,11 +8,13 @@ import Layout from '../components/layout/layout';
 const HomeScreen = () => {
   const [products, setProducts] = useState([] as Array<any>);
   const [categories, setCategories] = useState([] as Array<Category>);
+  const [store, setStore] = useState([] as Array<any>)
 
   useEffect(() => {
     const getAll = async () => {
       const result = await getProducts();
       setProducts(result.data.products);
+      setStore(result.data.store)
       setCategories(result.data.categories);
     };
     getAll();

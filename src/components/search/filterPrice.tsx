@@ -5,10 +5,11 @@ const FilterPrice = () => {
   return (
     <View>
       <View>
-        <Text>Preço</Text>
+        <Text style={{color: '#4E4750', fontWeight: 'bold', fontSize: 20, marginHorizontal: 10, marginVertical: 5}}>Preços</Text>
       </View>
       <View style={{justifyContent: 'center', flexDirection: 'row'}}>
-        <View>
+        <View style={{width: '50%'}}>
+          <Text style={{color: '#23052C', fontSize: 18, margin: 10}}>Mínimo</Text>
           <Input
             placeholder="R$ "
             inputContainerStyle={{
@@ -25,7 +26,8 @@ const FilterPrice = () => {
             }}></Input>
         </View>
 
-        <View>
+        <View style={{width: '48%'}}>
+          <Text style={{color: '#23052C', fontSize: 18, margin: 10}}>Máximo</Text>
           <Input
             placeholder="R$"
             inputContainerStyle={{

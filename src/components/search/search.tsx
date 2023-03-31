@@ -3,7 +3,11 @@ import React from 'react';
 import {Image, View} from 'react-native';
 import SearchModal from './searchModal';
 
-const SearchBar = () => {
+type SearchBarProps = {
+  stores?: string
+}
+
+const SearchBar = ({stores = []}) => {
   return (
     <View>
       <View
@@ -59,7 +63,7 @@ const SearchBar = () => {
         </View>
       </View>
 
-      <SearchModal />
+      <SearchModal stores={stores} />
     </View>
   );
 };
