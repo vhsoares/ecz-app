@@ -1,7 +1,11 @@
 import {Button} from '@rneui/base';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 
-const OrderBy = () => {
+const OrderBy = ({orderedBy, setOrderedBy}: any) => {
+  const handlePress = (value: string) => {
+    setOrderedBy(value);
+  };
+
   return (
     <View>
       <Text
@@ -21,38 +25,71 @@ const OrderBy = () => {
           justifyContent: 'space-between',
           margin: 10,
         }}>
-        <View>
-          <View style={styles.selectRadio}>
-            <Image
-              source={require('../../assets/images/Love.png')}
-              resizeMode={'contain'}
-              style={styles.image}
-            />
-          </View>
-          <Text style={styles.subtitle}>Padrão</Text>
-        </View>
-        <View>
-          <View style={styles.selectedRadio}>
-            <Image
-              source={require('../../assets/images/Love.png')}
-              resizeMode={'contain'}
-              style={styles.image}
-            />
-          </View>
-          <Text style={styles.subtitle}>Preço</Text>
-        </View>
-        <View>
-          <View style={styles.selectRadio}>
-            <Image
-              source={require('../../assets/images/Love.png')}
-              resizeMode={'contain'}
-              style={styles.image}
-            />
-          </View>
-          <Text style={styles.subtitle}>Avaliações</Text>
-        </View>
+        <OrderButton
+          value="time-desc"
+          onPress={() => handlePress('time-desc')}
+          label="Últimos"
+          image={require('../../assets/images/Order.png')}
+          orderedBy={orderedBy}
+        />
+
+        <OrderButton
+          value="price-desc"
+          orderedBy={orderedBy}
+          image={require('../../assets/images/Money.png')}
+          onPress={() => handlePress('price-desc')}
+          label="Mais Valiosos"
+        />
+
+        <OrderButton
+          value="price-asc"
+          orderedBy={orderedBy}
+          image={require('../../assets/images/Money.png')}
+          onPress={() => handlePress('price-asc')}
+          label="Mais Baratos"
+        />
       </View>
     </View>
+  );
+};
+
+type OrderButtonProps = {
+  orderedBy: string;
+  onPress: Function;
+  label: string;
+  value: string;
+  image: string;
+};
+
+const OrderButton = ({orderedBy, onPress, label, value, image = require('../../assets/images/Order.png')}: any) => {
+  return (
+    <TouchableOpacity onPress={() => onPress()}>
+      {orderedBy == value && (
+        <>
+          <View style={styles.selectedRadio}>
+            <Image
+              source={image}
+              resizeMode={'contain'}
+              style={styles.image}
+            />
+          </View>
+          <Text style={styles.subtitle}>{label}</Text>
+        </>
+      )}
+
+      {orderedBy != value && (
+        <>
+          <View style={styles.selectRadio}>
+            <Image
+              source={image}
+              resizeMode={'contain'}
+              style={styles.image}
+            />
+          </View>
+          <Text style={styles.subtitle}>{label}</Text>
+        </>
+      )}
+    </TouchableOpacity>
   );
 };
 
@@ -88,6 +125,7 @@ const styles = StyleSheet.create({
   image: {
     width: 30,
     height: 30,
+    opacity: 0.5,
   },
 });
 

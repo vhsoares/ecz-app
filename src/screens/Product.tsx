@@ -4,6 +4,7 @@ import {getProduct} from '../services/get';
 import {Button, Text} from '@rneui/base';
 import MenuButton from '../components/menu/menuButton';
 import Layout from '../components/layout/layout';
+import {Linking} from 'react-native';
 
 const ProductScreen = ({route = {}}: any) => {
   const [product, setProduct]: any = useState();
@@ -68,7 +69,9 @@ const ProductScreen = ({route = {}}: any) => {
               borderRadius: 12,
               paddingVertical: 14,
             }}
-            titleStyle={{fontWeight: 'bold', fontSize: 14}}>
+            titleStyle={{fontWeight: 'bold', fontSize: 14}}
+            onPress={() => Linking.openURL('https://economizei.com/api/redireciona/produto/'+ product?.id)}
+            >
             Ver na Loja
           </Button>
           <View

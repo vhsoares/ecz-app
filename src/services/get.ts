@@ -18,4 +18,20 @@ export const getCategory = (id: string) => {
 
 export const getSearch = (search: string) => {
   return axios.get('https://economizei.com/api/site/search?search=' + search);
-}
+};
+
+export const getFiltered = (
+  order: string,
+  priceMin: string,
+  priceMax: string,
+  storeId: string,
+) => {
+  return axios.get('https://economizei.com/api/site/products', {
+    params: {
+      order,
+      storeId,
+      priceMin,
+      priceMax,
+    },
+  });
+};

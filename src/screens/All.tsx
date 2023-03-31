@@ -6,6 +6,7 @@ import Filters from './Filters';
 import Category from './Category';
 import Search from './Search';
 import Categories from './Categories';
+import ProductFiltered from './ProductFiltered';
 
 const AllScreens = () => {
   const Stack = createNativeStackNavigator();
@@ -18,6 +19,7 @@ const AllScreens = () => {
       }}>
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Filters" component={Filters} />
+      <Stack.Screen name="ProductsFiltered" component={ProductFiltered} />
       <Stack.Screen name="Category" component={Category} />
       <Stack.Screen name="Categories" component={Categories} />
       <Stack.Screen name="Search" component={Search} />

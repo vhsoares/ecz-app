@@ -1,7 +1,8 @@
 import {Input} from '@rneui/base';
+import {useState} from 'react';
 import {Text, View} from 'react-native';
 
-const FilterPrice = () => {
+const FilterPrice = ({minimum, setMinimum, maximum, setMaximum}: any) => {
   return (
     <View>
       <View>
@@ -23,6 +24,9 @@ const FilterPrice = () => {
           </Text>
           <Input
             placeholder="R$ "
+            keyboardType="numeric"
+            value={minimum}
+            onChangeText={e => setMinimum(e)}
             inputContainerStyle={{
               backgroundColor: `#F6F3F6`,
               borderRadius: 12,
@@ -43,6 +47,9 @@ const FilterPrice = () => {
           </Text>
           <Input
             placeholder="R$"
+            keyboardType="numeric"
+            value={maximum}
+            onChangeText={e => setMaximum(e)}
             inputContainerStyle={{
               backgroundColor: `#F6F3F6`,
               borderRadius: 12,
