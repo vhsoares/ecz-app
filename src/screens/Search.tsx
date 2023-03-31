@@ -1,27 +1,27 @@
 import {useEffect, useState} from 'react';
-import {getCategory, getProduct, getProducts} from '../services/get';
+import {getCategory, getProduct, getProducts, getSearch} from '../services/get';
 import {Text, View} from 'react-native';
 import ProductCard from '../components/product-card/productCard';
 import Layout from '../components/layout/layout';
 import SearchBar from '../components/search/search';
 
-const Category = ({route = {}}: any) => {
+const Search = ({route = {}}: any) => {
   const [products, setProducts] = useState([] as Array<any>);
   const [category, setCategory] = useState({} as any);
   const [stores, setStores] = useState([] as Array<any>);
 
-  const {id} = route.params || {};
+  const {searchParams} = route.params || {};
 
   useEffect(() => {
-    const getInfo = async (id: string) => {
-      const result = await getCategory(id);
+    const getInfo = async (search: string) => {
+      const result = await getSearch(search);
       setProducts(result.data.products);
       setStores(result.data.stores);
       setCategory(result.data.category);
     };
 
-    getInfo(id);
-  }, [id]);
+    getInfo(searchParams);
+  }, [searchParams]);
 
   return (
     <Layout>
@@ -34,7 +34,7 @@ const Category = ({route = {}}: any) => {
             fontWeight: '600',
             marginLeft: '5%',
           }}>
-          {category.name}
+          Resultados da Busca
         </Text>
         <Text
           style={{
@@ -43,7 +43,7 @@ const Category = ({route = {}}: any) => {
             fontWeight: '400',
             marginLeft: '5%',
           }}>
-          {category.description}
+          O termo buscado foi: {searchParams}
         </Text>
         <View
           style={{
@@ -70,11 +70,21 @@ const Category = ({route = {}}: any) => {
             );
           })}
 
-          {products.length < 1 && <Text style={{marginVertical: 200, fontSize: 18, color: '#A69CA9', textAlign: 'center'}}>Não foram encontrados produtos nessa categoria</Text>}
+          {products.length < 1 && (
+            <Text
+              style={{
+                marginVertical: 200,
+                fontSize: 18,
+                color: '#A69CA9',
+                textAlign: 'center',
+              }}>
+              Não encontramos nenhuma oferta para: <Text style={{fontWeight: 'bold'}}>{searchParams}</Text>
+            </Text>
+          )}
         </View>
       </View>
     </Layout>
   );
 };
 
-export default Category;
+export default Search;

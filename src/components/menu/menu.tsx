@@ -53,7 +53,7 @@ const Menu = () => {
         />
         <MenuButton
           title={'comprar'}
-          onPress={() => RootNavigation.navigate('Store')}
+          onPress={() => RootNavigation.navigate('Categories')}
           linearGradient={{
             colors: ['#E2E2E2', '#FFFFFF'],
             start: {x: 0, y: 0.5},

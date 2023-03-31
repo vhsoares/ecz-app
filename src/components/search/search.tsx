@@ -1,13 +1,10 @@
 import {Button, Icon, Input} from '@rneui/base';
-import React from 'react';
+import React, { useState } from 'react';
 import {Image, View} from 'react-native';
-import SearchModal from './searchModal';
+import * as RootNavigaton from '../../utils/RootNavigation';
 
-type SearchBarProps = {
-  stores?: string
-}
-
-const SearchBar = ({stores = []}) => {
+const SearchBar = () => {
+  const [searchText, setSearchText] = useState('')
   return (
     <View>
       <View
@@ -34,6 +31,10 @@ const SearchBar = ({stores = []}) => {
             paddingVertical: 5,
             borderBottomColor: 'transparent',
           }}
+          onSubmitEditing={e =>
+            RootNavigaton.navigate('Search', {searchParams: searchText})
+          }
+          onChangeText={(e) => setSearchText(e) }
           rightIcon={
             <Image
               source={require('../../assets/images/Search.png')}
@@ -54,7 +55,8 @@ const SearchBar = ({stores = []}) => {
               borderRadius: 12,
               width: 60,
               height: 60,
-            }}>
+            }}
+            onPress={() => RootNavigaton.navigate('Filters')}>
             <Image
               source={require('../../assets/images/Filter.png')}
               style={{width: 22, height: 12}}
@@ -62,8 +64,6 @@ const SearchBar = ({stores = []}) => {
           </Button>
         </View>
       </View>
-
-      <SearchModal stores={stores} />
     </View>
   );
 };

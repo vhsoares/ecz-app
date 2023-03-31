@@ -11,3 +11,11 @@ export const getProduct = (id: string) => {
 export const getStore = (id: string) => {
   return axios.get('https://economizei.com/api/site/store/' + id);
 };
+
+export const getCategory = (id: string) => {
+  return axios.get('https://economizei.com/api/site/category/' + id);
+};
+
+export const getSearch = (search: string) => {
+  return axios.get('https://economizei.com/api/site/search?search=' + search);
+}

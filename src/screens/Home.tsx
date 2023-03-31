@@ -4,17 +4,18 @@ import ProductCard from '../components/product-card/productCard';
 import {useState, useEffect} from 'react';
 import {getProducts} from '../services/get';
 import Layout from '../components/layout/layout';
-
-const HomeScreen = () => {
+import Stories from '../components/stories/stories';
+import SearchBar from '../components/search/search';
+const HomeScreen = ({}) => {
   const [products, setProducts] = useState([] as Array<any>);
   const [categories, setCategories] = useState([] as Array<Category>);
-  const [store, setStore] = useState([] as Array<any>)
+  const [stores, setStores] = useState([] as Array<any>);
 
   useEffect(() => {
     const getAll = async () => {
       const result = await getProducts();
       setProducts(result.data.products);
-      setStore(result.data.store)
+      setStores(result.data.stores);
       setCategories(result.data.categories);
     };
     getAll();
@@ -22,7 +23,9 @@ const HomeScreen = () => {
 
   return (
     <Layout>
+      <SearchBar />
       <View style={{flexGrow: 1}}>
+        <Stories stores={stores} />
         <Categories categories={categories} />
         <Text
           style={{
@@ -41,7 +44,7 @@ const HomeScreen = () => {
             justifyContent: 'space-evenly',
             flexGrow: 1,
           }}>
-          {products.map((product, index) => {
+          {products.map(product => {
             return (
               <ProductCard
                 id={product.id}
