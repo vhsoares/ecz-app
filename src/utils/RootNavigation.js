@@ -8,6 +8,13 @@ export function navigate(name, params) {
   }
 }
 
+export function canGoBack() {
+  if(navigationRef.isReady()) {
+    return navigationRef.canGoBack()
+  }
+  return false
+}
+
 export function back() {
   if(navigationRef.isReady()) {
     navigationRef.goBack()
