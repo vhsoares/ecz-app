@@ -30,6 +30,7 @@ const SearchBar = () => {
             paddingHorizontal: 15,
             paddingVertical: 5,
             borderBottomColor: 'transparent',
+            elevation: 5,
           }}
           onSubmitEditing={e =>
             RootNavigaton.navigate('Search', {searchParams: searchText})
@@ -47,14 +48,19 @@ const SearchBar = () => {
             shadowOffset: {width: 10, height: 6},
             shadowOpacity: 0.35,
             shadowRadius: 20,
+            backgroundColor: "#0000",
             width: '20%',
+            marginVertical: -5
           }}>
           <Button
             buttonStyle={{
               backgroundColor: '#F6F3F6',
               borderRadius: 12,
               width: 60,
+              zIndex: 10,
               height: 60,
+              elevation:5,
+              marginVertical: 5
             }}
             onPress={() => RootNavigaton.navigate('Filters')}>
             <Image

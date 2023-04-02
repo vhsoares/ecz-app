@@ -26,8 +26,8 @@ const MenuButton = ({
   return (
     <View
       style={{
-        elevation: 10,
         padding: 10,
+        paddingVertical: 8,
         zIndex: 10,
         shadowColor: '#000',
         shadowOffset: {width: 10, height: 4},
@@ -43,6 +43,8 @@ const MenuButton = ({
           borderRadius: 13,
           margin: 0,
           position: 'relative',
+          elevation: 2,
+          marginVertical: 2
         }}
         linearGradientProps={linearGradient}
         onPress={onPress}>

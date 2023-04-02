@@ -34,6 +34,8 @@ const FilterPrice = ({minimum, setMinimum, maximum, setMaximum}: any) => {
               shadowOffset: {width: 10, height: 6},
               shadowOpacity: 0.35,
               shadowRadius: 20,
+
+              elevation: 5,
               width: '90%',
               paddingHorizontal: 15,
               paddingVertical: 5,
@@ -54,6 +56,7 @@ const FilterPrice = ({minimum, setMinimum, maximum, setMaximum}: any) => {
               backgroundColor: `#F6F3F6`,
               borderRadius: 12,
               shadowColor: '#000',
+              elevation: 5,
               shadowOffset: {width: 10, height: 6},
               shadowOpacity: 0.35,
               shadowRadius: 20,

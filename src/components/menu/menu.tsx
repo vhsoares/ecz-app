@@ -1,5 +1,6 @@
 import {View} from 'react-native';
 import MenuButton from './menuButton';
+import {Linking} from 'react-native';
 import * as RootNavigation from './../../utils/RootNavigation';
 
 // todo tonight
@@ -12,7 +13,7 @@ const Menu = () => {
   return (
     <View
       style={{
-        elevation: 10,
+        elevation: 0,
         padding: 0,
         zIndex: 10,
         shadowColor: '#000',
@@ -20,8 +21,9 @@ const Menu = () => {
         shadowOpacity: 0.15,
         shadowRadius: 20,
         position: 'absolute',
-        bottom: -2,
+        bottom: -5,
         width: '100%',
+        paddingTop: 10,
       }}>
       <View
         style={{
@@ -35,9 +37,10 @@ const Menu = () => {
           marginTop: 'auto',
           flex: 1,
           marginBottom: 0,
+          shadowColor: 'red',
           padding: 10,
           paddingBottom: 30,
-          elevation: 30,
+          elevation: 10,
           // position: 'absolute',
           // bottom: 0
         }}>
@@ -64,7 +67,7 @@ const Menu = () => {
 
         <MenuButton
           title={'adicionar'}
-          onPress={() => {}}
+          onPress={() => Linking.openURL('https://economizei.com/')}
           linearGradient={{
             colors: ['#E2E2E2', '#FFFFFF'],
             start: {x: 0, y: 0.5},
@@ -75,7 +78,7 @@ const Menu = () => {
 
         <MenuButton
           title={'relampago'}
-          onPress={() => {}}
+          onPress={() => Linking.openURL('https://economizei.com/promos-relampago')}
           linearGradient={{
             colors: ['#E2E2E2', '#FFFFFF'],
             start: {x: 0, y: 0.5},

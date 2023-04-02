@@ -15,7 +15,7 @@ const Categories = ({categories}: CategoriesProps) => {
   return (
     <View>
       <View
-        style={{flexDirection: 'row', justifyContent: 'center', width: '100%'}}>
+        style={{flexDirection: 'row', justifyContent: 'center', width: '100%', paddingBottom: 4}}>
         {categories.map((category, index) => {
           return (
             <View key={category.id}>
@@ -27,6 +27,7 @@ const Categories = ({categories}: CategoriesProps) => {
                     shadowOffset: {width: -10, height: -8},
                     shadowOpacity: 0.95,
                     shadowRadius: 20,
+                    marginHorizontal: 5,
                   }}>
                   <View
                     style={{
@@ -40,8 +41,9 @@ const Categories = ({categories}: CategoriesProps) => {
                         backgroundColor: '#F6F3F7',
                         margin: 'auto',
                         borderRadius: 20,
-                        marginHorizontal: 5,
                       }}
+                      radius={18}
+                      raised
                       titleStyle={{color: '#A69CA9', fontSize: 15}}
                       onPress={() =>
                         RootNavigaton.navigate('Category', {id: category.id})
