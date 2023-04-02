@@ -25,13 +25,13 @@ function App(): JSX.Element {
   return (
     <ThemeProvider>
       <SafeAreaView style={styles}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={styles.backgroundColor}
-        />
-        <NavigationContainer ref={navigationRef}>
-          <AllScreens />
-        </NavigationContainer>
+          <StatusBar
+            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+            backgroundColor={styles.backgroundColor}
+          />
+          <NavigationContainer ref={navigationRef}>
+            <AllScreens />
+          </NavigationContainer>
       </SafeAreaView>
       <Menu />
     </ThemeProvider>

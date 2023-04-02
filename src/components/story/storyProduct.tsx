@@ -4,6 +4,7 @@ import {
   GestureDetector,
   Gesture,
   PanGestureHandlerEventPayload,
+  GestureHandlerRootView,
 } from 'react-native-gesture-handler';
 import {Linking} from 'react-native';
 import {useState} from 'react';
@@ -45,73 +46,76 @@ const StoryProduct = ({
   const composed = Gesture.Race(dragGesture, tapGesture);
 
   return (
-    <GestureDetector gesture={composed}>
-      <View
-        style={{
-          justifyContent: 'space-between',
-          paddingHorizontal: 15,
-          transform: [
-            {
-              translateX: transform,
-            },
-          ],
-        }}>
+    <GestureHandlerRootView>
+      <GestureDetector gesture={composed}>
         <View
           style={{
-            justifyContent: 'center',
-            flexDirection: 'row',
-            marginVertical: 30,
+            justifyContent: 'space-between',
+            paddingHorizontal: 15,
+            transform: [
+              {
+                translateX: transform,
+              },
+            ],
           }}>
-          <Image
-            source={{uri: 'https://economizei.com/api/' + image}}
-            style={{width: '100%', height: 300, margin: 'auto'}}
-            resizeMode="contain"
-          />
-        </View>
-        <Text
-          style={{
-            color: '#23052C',
-            fontSize: 18,
-            fontWeight: 'bold',
-            lineHeight: 26,
-          }}>
-          {name}
-        </Text>
-        <Text
-          style={{
-            color: '#A69CA9',
-            fontSize: 16,
-            textDecorationLine: 'line-through',
-            marginVertical: 10,
-            fontWeight: '300',
-          }}>
-          De R$ {priceFrom}
-        </Text>
-        <Text style={{color: '#8612A7', fontWeight: 'bold', fontSize: 30}}>
-          R$ {price}
-        </Text>
-
-        <Button
-          buttonStyle={{
-            borderRadius: 10,
-            backgroundColor: '#8612A7',
-            marginTop: 15,
-            paddingVertical: 13,
-            height: 44,
-            justifyContent: 'flex-start',
-          }}
-          onPress={() => Linking.openURL(shareLink)}>
+          <View
+            style={{
+              justifyContent: 'center',
+              flexDirection: 'row',
+              marginVertical: 30,
+            }}>
+            <Image
+              source={{uri: 'https://economizei.com/api/' + image}}
+              style={{width: '100%', height: 250, margin: 'auto'}}
+              resizeMode="contain"
+            />
+          </View>
           <Text
             style={{
-              fontSize: 12,
+              color: '#23052C',
+              fontSize: 18,
               fontWeight: 'bold',
-              color: 'white',
-            }}>
-            Ver na Loja
+              lineHeight: 26,
+            }}
+            numberOfLines={1}>
+            {name}
           </Text>
-        </Button>
-      </View>
-    </GestureDetector>
+          <Text
+            style={{
+              color: '#A69CA9',
+              fontSize: 16,
+              textDecorationLine: 'line-through',
+              marginVertical: 10,
+              fontWeight: '300',
+            }}>
+            De R$ {priceFrom}
+          </Text>
+          <Text style={{color: '#8612A7', fontWeight: 'bold', fontSize: 30}}>
+            R$ {price}
+          </Text>
+
+          <Button
+            buttonStyle={{
+              borderRadius: 10,
+              backgroundColor: '#8612A7',
+              marginTop: 15,
+              paddingVertical: 13,
+              height: 44,
+              justifyContent: 'flex-start',
+            }}
+            onPress={() => Linking.openURL(shareLink)}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                color: 'white',
+              }}>
+              Ver na Loja
+            </Text>
+          </Button>
+        </View>
+      </GestureDetector>
+    </GestureHandlerRootView>
   );
 };
 
