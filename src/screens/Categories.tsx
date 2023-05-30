@@ -45,7 +45,8 @@ export const Categories = () => {
                 }}
                 onPress={() =>
                   RootNavigation.navigate('Category', {id: category.id})
-                }>
+                }
+                key={category.id}>
                 <Image
                   source={{uri: 'https://economizei.com/api/' + category.image}}
                   style={{width: '100%', height: '100%'}}

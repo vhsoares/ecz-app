@@ -9,14 +9,14 @@ export function navigate(name, params) {
 }
 
 export function canGoBack() {
-  if(navigationRef.isReady()) {
-    return navigationRef.canGoBack()
+  if (navigationRef.isReady()) {
+    return navigationRef.canGoBack();
   }
-  return false
+  return false;
 }
 
 export function back() {
-  if(navigationRef.isReady()) {
-    navigationRef.goBack()
+  if (navigationRef.isReady()) {
+    navigationRef.goBack();
   }
 }

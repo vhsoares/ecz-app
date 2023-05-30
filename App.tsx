@@ -12,6 +12,7 @@ import Menu from './src/components/menu/menu';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import AllScreens from './src/screens/All';
 import {NavigationContainer} from '@react-navigation/native';
+import AuthScreens from './src/screens/Auth';
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -22,18 +23,28 @@ function App(): JSX.Element {
     marginBottom: 100,
   };
 
+  const isAuth = false;
+
   return (
     <ThemeProvider>
-      <SafeAreaView style={styles}>
-          <StatusBar
-            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-            backgroundColor={styles.backgroundColor}
-          />
-          <NavigationContainer ref={navigationRef}>
-            <AllScreens />
-          </NavigationContainer>
-      </SafeAreaView>
-      <Menu />
+      {isAuth ? (
+        <>
+          <SafeAreaView style={styles}>
+            <StatusBar
+              barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+              backgroundColor={styles.backgroundColor}
+            />
+            <NavigationContainer ref={navigationRef}>
+              <AllScreens />
+            </NavigationContainer>
+          </SafeAreaView>
+          <Menu />
+        </>
+      ) : (
+        <NavigationContainer ref={navigationRef}>
+          <AuthScreens />
+        </NavigationContainer>
+      )}
     </ThemeProvider>
   );
 }
