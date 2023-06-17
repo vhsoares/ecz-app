@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {getStore} from '../../services/get';
+import {getStore, getStories} from '../../services/get';
+import {apiUrl} from '../../utils/api';
 
 type Stories = {
   stores: Array<any>;
@@ -18,6 +19,12 @@ type Stories = {
 const Stories = ({stores}: Stories) => {
   const navigation = useNavigation<any>();
   const [availableStores, setAvailableStores] = useState([] as Array<any>);
+  const [isLoading, setIsLoading] = useState(true);
+  const [customStories, setCustomStories] = useState({
+    products: [] as any,
+    name: '',
+    id: '',
+  });
 
   useEffect(() => {
     const getAvailableStores = async () => {
@@ -37,7 +44,30 @@ const Stories = ({stores}: Stories) => {
       setAvailableStores(filteredStores);
     };
 
-    getAvailableStores();
+    const getCustomStories = async () => {
+      const {data} = await getStories();
+
+      console.log(data?.products);
+
+      if (data?.products?.length) {
+        setCustomStories({
+          id: 'imperdiveis',
+          name: 'Imperdíveis',
+          products: data.products,
+        });
+      }
+    };
+
+    const handleGetStories = async () => {
+      setIsLoading(true);
+      try {
+        await Promise.all([getAvailableStores(), getCustomStories()]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    handleGetStories();
   }, [stores]);
 
   return (
@@ -46,33 +76,72 @@ const Stories = ({stores}: Stories) => {
         ...styles.container,
         opacity: availableStores.length === 0 ? 0 : 1,
       }}>
-      <ScrollView horizontal>
-        {availableStores.map((store, index) => (
-          <TouchableOpacity
-            style={styles.touchableOpacity}
-            onPress={() => navigation.navigate('StoreProduct', {store})}
-            key={index}>
-            <LinearGradient
-              colors={['#CA4EE2', '#7135B1']}
-              style={styles.imageContainer}>
-              <View
-                style={{
-                  ...styles.imageContainer,
-                  width: 61,
-                  height: 61,
-                  flex: 0,
-                }}>
-                <Image
-                  source={{uri: 'https://economizei.com/api/' + store.image}}
-                  style={styles.image}
-                  resizeMode={'contain'}
-                />
-              </View>
-            </LinearGradient>
-            <Text style={styles.text}>{store.name}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      {!isLoading && (
+        <ScrollView horizontal>
+          {customStories?.products?.length ? (
+            <TouchableOpacity
+              style={styles.touchableOpacity}
+              onPress={() =>
+                navigation.replace('StoreProduct', {
+                  store: customStories,
+                  availableStores,
+                  currentIndex: -1,
+                })
+              }>
+              <LinearGradient
+                colors={['#CA4EE2', '#7135B1']}
+                style={styles.imageContainer}>
+                <View
+                  style={{
+                    ...styles.imageContainer,
+                    width: 61,
+                    height: 61,
+                    flex: 0,
+                  }}>
+                  <Image
+                    source={{uri: apiUrl + customStories.products?.[0]?.image}}
+                    style={styles.image}
+                    resizeMode={'contain'}
+                  />
+                </View>
+              </LinearGradient>
+              <Text style={styles.text}>{customStories.name}</Text>
+            </TouchableOpacity>
+          ) : null}
+
+          {availableStores.map((store, index) => (
+            <TouchableOpacity
+              style={styles.touchableOpacity}
+              onPress={() =>
+                navigation.replace('StoreProduct', {
+                  store,
+                  availableStores: availableStores,
+                  currentIndex: index,
+                })
+              }
+              key={index}>
+              <LinearGradient
+                colors={['#CA4EE2', '#7135B1']}
+                style={styles.imageContainer}>
+                <View
+                  style={{
+                    ...styles.imageContainer,
+                    width: 61,
+                    height: 61,
+                    flex: 0,
+                  }}>
+                  <Image
+                    source={{uri: apiUrl + store.image}}
+                    style={styles.image}
+                    resizeMode={'contain'}
+                  />
+                </View>
+              </LinearGradient>
+              <Text style={styles.text}>{store.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -104,9 +173,10 @@ const styles = StyleSheet.create({
     marginRight: 0,
   },
   text: {
-    fontSize: 8,
+    fontSize: 11,
     color: '#A69CA9',
     lineHeight: 16,
+    marginTop: 2,
   },
 });
 

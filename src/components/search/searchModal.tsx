@@ -27,7 +27,7 @@ const SearchModal = ({stores}: SearchModalProps) => {
   };
 
   return (
-    <View>
+    <View style={{paddingHorizontal: 10}}>
       <View>
         <Text
           style={{

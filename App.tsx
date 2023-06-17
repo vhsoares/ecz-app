@@ -5,46 +5,59 @@
  * @format
  */
 import React from 'react';
-import {SafeAreaView, StatusBar, useColorScheme} from 'react-native';
 import {navigationRef} from './src/utils/RootNavigation';
 import {ThemeProvider} from '@rneui/themed';
-import Menu from './src/components/menu/menu';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import AllScreens from './src/screens/All';
 import {NavigationContainer} from '@react-navigation/native';
-import AuthScreens from './src/screens/Auth';
+import * as RootNavigaton from './src/utils/RootNavigation';
+
+import OneSignal from 'react-native-onesignal';
+
+// OneSignal Initialization
+OneSignal.setAppId('2c1cac35-43ba-4434-a727-0af0df37bee0');
+
+// promptForPushNotificationsWithUserResponse will show the native iOS or Android notification permission prompt.
+// We recommend removing the following code and instead using an In-App Message to prompt for notification permission (See step 8)
+OneSignal.promptForPushNotificationsWithUserResponse();
+
+//Method for handling notifications received while app in foreground
+OneSignal.setNotificationWillShowInForegroundHandler(
+  notificationReceivedEvent => {
+    console.log(
+      'OneSignal: notification will show in foreground:',
+      notificationReceivedEvent,
+    );
+    let notification = notificationReceivedEvent.getNotification();
+    console.log('notification: ', notification);
+    const data = notification.additionalData;
+    console.log('additionalData: ', data);
+    // Complete with null means don't show a notification.
+    notificationReceivedEvent.complete(notification);
+  },
+);
+
+//Method for handling notifications opened
+OneSignal.setNotificationOpenedHandler(({notification}: any) => {
+  console.log('OneSignal: notification opened:', notification);
+
+  if (notification && notification?.additionalData) {
+    const data = notification.additionalData;
+    console.log('additionalData: ', data);
+
+    if (data?.product_id && navigationRef && navigationRef.current) {
+      RootNavigaton.navigate('Product', {
+        id: data.product_id,
+      });
+    }
+  }
+});
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const styles = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    flex: 1,
-    marginBottom: 100,
-  };
-
-  const isAuth = false;
-
   return (
     <ThemeProvider>
-      {isAuth ? (
-        <>
-          <SafeAreaView style={styles}>
-            <StatusBar
-              barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-              backgroundColor={styles.backgroundColor}
-            />
-            <NavigationContainer ref={navigationRef}>
-              <AllScreens />
-            </NavigationContainer>
-          </SafeAreaView>
-          <Menu />
-        </>
-      ) : (
-        <NavigationContainer ref={navigationRef}>
-          <AuthScreens />
-        </NavigationContainer>
-      )}
+      <NavigationContainer ref={navigationRef}>
+        <AllScreens />
+      </NavigationContainer>
     </ThemeProvider>
   );
 }

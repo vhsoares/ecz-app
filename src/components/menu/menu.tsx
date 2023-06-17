@@ -1,15 +1,28 @@
+import React, {useState} from 'react';
 import {View} from 'react-native';
 import MenuButton from './menuButton';
 import {Linking} from 'react-native';
 import * as RootNavigation from './../../utils/RootNavigation';
+import {useRoute} from '@react-navigation/native';
 
-// todo tonight
-// product Profile
-// product Card
-// sidebar Navigation
-// share Button
+const Menu = (props: any) => {
+  const relampagoActive = require('../../assets/images/relampago-active.png');
+  const relampagoInactive = require('../../assets/images/Lightning.png');
+  const homeActive = require('../../assets/images/House.png');
+  const homeInactive = require('../../assets/images/home-inactive.png');
 
-const Menu = () => {
+  const gradientProps = {
+    start: {x: 0, y: 0.5},
+    end: {x: 1, y: 1.5},
+  };
+  const inactive = {...gradientProps, colors: ['#E2E2E2', '#FFFFFF']};
+  const active = {...gradientProps, colors: ['#CA4EE2', '#7135B1']};
+  const route = useRoute();
+
+  const handleButtonPress = (route: any) => {
+    RootNavigation.navigate(route);
+  };
+
   return (
     <View
       style={{
@@ -20,10 +33,8 @@ const Menu = () => {
         shadowOffset: {width: 0, height: -20},
         shadowOpacity: 0.15,
         shadowRadius: 20,
-        position: 'absolute',
-        bottom: -5,
         width: '100%',
-        paddingTop: 10,
+        height: props?.menuHeight,
       }}>
       <View
         style={{
@@ -38,53 +49,49 @@ const Menu = () => {
           flex: 1,
           marginBottom: 0,
           shadowColor: 'red',
-          padding: 10,
-          paddingBottom: 30,
           elevation: 10,
-          // position: 'absolute',
-          // bottom: 0
         }}>
         <MenuButton
           title={'Home'}
-          onPress={() => RootNavigation.navigate('Home')}
-          linearGradient={{
-            colors: ['#CA4EE2', '#7135B1'],
-            start: {x: 0, y: 0.5},
-            end: {x: 1, y: 1.5},
-          }}
-          image={require('../../assets/images/House.png')}
+          onPress={() => handleButtonPress('Home')}
+          linearGradient={route.name === 'Home' ? active : inactive}
+          image={route.name === 'Home' ? homeActive : homeInactive}
         />
+
         <MenuButton
           title={'comprar'}
-          onPress={() => RootNavigation.navigate('Categories')}
-          linearGradient={{
-            colors: ['#E2E2E2', '#FFFFFF'],
-            start: {x: 0, y: 0.5},
-            end: {x: 1, y: 1.5},
-          }}
+          onPress={() => handleButtonPress('Categories')}
+          linearGradient={route.name === 'Categories' ? active : inactive}
           image={require('../../assets/images/Purse.png')}
         />
 
-        <MenuButton
+        {/* <MenuButton
           title={'adicionar'}
           onPress={() => Linking.openURL('https://economizei.com/')}
-          linearGradient={{
-            colors: ['#E2E2E2', '#FFFFFF'],
-            start: {x: 0, y: 0.5},
-            end: {x: 1, y: 1.5},
-          }}
+          linearGradient={route.name === 'Adicionar' ? active : inactive}
           image={require('../../assets/images/Add.png')}
-        />
+        /> */}
 
         <MenuButton
           title={'relampago'}
-          onPress={() => Linking.openURL('https://economizei.com/promos-relampago')}
-          linearGradient={{
-            colors: ['#E2E2E2', '#FFFFFF'],
-            start: {x: 0, y: 0.5},
-            end: {x: 1, y: 1.5},
-          }}
-          image={require('../../assets/images/Lightning.png')}
+          onPress={() => handleButtonPress('PromoRelampago')}
+          linearGradient={route.name === 'PromoRelampago' ? active : inactive}
+          active={route.name === 'PromoRelampago'}
+          icon="flash"
+          image={
+            route.name === 'PromoRelampago'
+              ? relampagoActive
+              : relampagoInactive
+          }
+          imageWidth={15}
+        />
+
+        <MenuButton
+          title={'profile'}
+          onPress={() => handleButtonPress('Profile')}
+          linearGradient={route.name === 'Profile' ? active : inactive}
+          active={route.name === 'Profile'}
+          icon="account"
           imageWidth={15}
         />
       </View>

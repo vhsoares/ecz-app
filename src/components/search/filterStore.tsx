@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import {Text, View, Image, TouchableOpacity} from 'react-native';
+import {apiUrl} from '../../utils/api';
 
 type FilterStoreProps = {
   stores: Array<any>;
@@ -39,7 +40,7 @@ const StoreIcon = ({
               margin: 5,
             }}>
             <Image
-              source={{uri: 'https://economizei.com/api/' + image}}
+              source={{uri: apiUrl + image}}
               style={{width: '90%', height: '90%'}}
               resizeMode={'contain'}
             />

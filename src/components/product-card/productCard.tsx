@@ -1,7 +1,9 @@
 import {Text} from '@rneui/base';
-import {Image, TouchableOpacity, View} from 'react-native';
+import {Image, Linking, TouchableOpacity, View} from 'react-native';
 import TagView from './tagView';
 import * as RootNavigaton from '../../utils/RootNavigation';
+import {fontFamily} from '../../styles/font';
+import {apiUrl} from '../../utils/api';
 
 type ProductCardProps = {
   id: string;
@@ -13,6 +15,7 @@ type ProductCardProps = {
   isFreteGratis?: boolean;
   isConsumersWeek?: boolean;
   isCorre?: boolean;
+  layout?: 'default' | 'promo';
 };
 
 const ProductCard = ({
@@ -25,11 +28,14 @@ const ProductCard = ({
   isFreteGratis = false,
   isConsumersWeek = false,
   isCorre = false,
+  layout = 'default',
 }: ProductCardProps) => {
+  const isPromo = layout === 'promo';
+
   return (
     <View
       style={{
-        width: '45%',
+        width: isPromo ? '90%' : '45%',
         paddingTop: 10,
       }}>
       <View
@@ -44,27 +50,55 @@ const ProductCard = ({
         <TouchableOpacity
           onPress={() => RootNavigaton.navigate('Product', {id})}>
           <View
-            style={{
-              alignContent: 'center',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-            }}>
+            style={
+              isPromo
+                ? {
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                    width: '100%',
+                    padding: 10,
+                    gap: 12,
+                    paddingVertical: 22,
+                  }
+                : {
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                    flexWrap: 'wrap',
+                    paddingVertical: 15,
+                    paddingHorizontal: 10,
+                  }
+            }>
             <View
               style={{
-                width: '85%',
-                marginLeft: '7.5%',
-                marginTop: '5%',
-                marginBottom: '5%',
-                display: 'flex',
-                justifyContent: 'center',
-                position: 'relative',
+                width: isPromo ? '35%' : '80%',
+                height: 120,
+                aspectRatio: 1 * 1.4,
+                alignItems: 'center',
               }}>
               <Image
-                source={{uri: 'https://economizei.com/api/' + image}}
-                style={{maxWidth: '100%', height: 130}}
+                source={{uri: apiUrl + image}}
+                style={{
+                  resizeMode: 'contain',
+                  width: isPromo ? '100%' : '80%',
+                  height: isPromo ? '100%' : '80%',
+                }}
               />
             </View>
-            <View style={{margin: '5%', width: '90%', flexDirection: 'column'}}>
+            <View
+              style={
+                isPromo
+                  ? {
+                      width: '60%',
+                      maxWidth: '100%',
+                      flexDirection: 'column',
+                    }
+                  : {
+                      margin: '5%',
+                      width: '90%',
+                      flexDirection: 'column',
+                    }
+              }>
               <Text
                 numberOfLines={1}
                 style={{
@@ -103,6 +137,31 @@ const ProductCard = ({
             </View>
           </View>
         </TouchableOpacity>
+        {isPromo ? (
+          <TouchableOpacity
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              width: '100%',
+              gap: 12,
+              paddingVertical: 15,
+              borderTopColor: '#F6F3F7',
+              borderTopWidth: 1,
+            }}
+            onPress={() =>
+              Linking.openURL(apiUrl + '/redireciona/produto/' + id)
+            }>
+            <Text
+              style={{
+                color: '#8612A7',
+                fontFamily: fontFamily,
+                fontWeight: '700',
+              }}>
+              Ver na Loja
+            </Text>
+          </TouchableOpacity>
+        ) : null}
       </View>
     </View>
   );

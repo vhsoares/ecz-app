@@ -8,6 +8,7 @@ import {
 } from 'react-native-gesture-handler';
 import {Linking} from 'react-native';
 import {useState} from 'react';
+import {apiUrl} from '../../utils/api';
 
 const SCREEN_WIDTH = Dimensions.get('screen').width;
 
@@ -65,7 +66,7 @@ const StoryProduct = ({
               marginVertical: 30,
             }}>
             <Image
-              source={{uri: 'https://economizei.com/api/' + image}}
+              source={{uri: apiUrl + image}}
               style={{width: '100%', height: 250, margin: 'auto'}}
               resizeMode="contain"
             />

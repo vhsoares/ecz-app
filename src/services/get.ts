@@ -1,23 +1,48 @@
 import axios from 'axios';
+import {apiUrl} from '../utils/api';
+import {getToken} from '../utils/AuthToken';
+
+const request = axios.create({
+  baseURL: apiUrl,
+  timeout: 30000,
+});
 
 export const getProducts = () => {
-  return axios.get('https://economizei.com/api/site/home');
+  return request.get('site/home');
+};
+
+export const getNotifications = async () => {
+  const token = await getToken();
+
+  return request.get('notification', {
+    headers: {
+      'x-access-token': token,
+    },
+  });
+};
+
+export const getPromoRelampago = () => {
+  return request.get('site/promos-relampago');
+};
+
+export const getStories = () => {
+  return request.get('site/stories');
 };
 
 export const getProduct = (id: string) => {
-  return axios.get('https://economizei.com/api/site/product/' + id);
+  return request.get('site/product/' + id);
 };
 
 export const getStore = (id: string) => {
-  return axios.get('https://economizei.com/api/site/store/' + id);
+  return request.get('site/store/' + id);
 };
 
 export const getCategory = (id: string) => {
-  return axios.get('https://economizei.com/api/site/category/' + id);
+  return request.get('site/category/' + id);
 };
 
 export const getSearch = (search: string) => {
-  return axios.get('https://economizei.com/api/site/search?search=' + search);
+  return request.get('site/search?search=' + search);
 };
 
 export const getFiltered = (
@@ -26,7 +51,7 @@ export const getFiltered = (
   priceMax: string,
   storeId: string,
 ) => {
-  return axios.get('https://economizei.com/api/site/products', {
+  return axios.get('site/products', {
     params: {
       order,
       storeId,

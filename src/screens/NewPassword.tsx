@@ -1,12 +1,13 @@
 import {Image, Text} from '@rneui/base';
 import {useState} from 'react';
-import {Platform, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {ScrollView, TextInput} from 'react-native-gesture-handler';
 import {MaterialIcon} from '../components/icon/icon';
 import {Formik} from 'formik';
 import * as yup from 'yup';
-import {createUser} from '../services/auth';
+import {changePassword} from '../services/auth';
 import {fontFamily} from '../styles/font';
+import * as RootNavigation from './../utils/RootNavigation';
 
 const styles = StyleSheet.create({
   container: {
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const RegisterScreen = ({navigation}: any) => {
+const NewPasswordScreen = ({navigation, route}: any) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [repeatPasswordVisible, setRepeatPasswordVisible] = useState(false);
 
@@ -125,7 +126,10 @@ const RegisterScreen = ({navigation}: any) => {
     console.log(values, 'values');
 
     try {
-      const response = await createUser(values);
+      const response = await changePassword({
+        ...values,
+        phone: route.params.phone,
+      });
 
       console.log(response, 'response');
 
@@ -157,7 +161,7 @@ const RegisterScreen = ({navigation}: any) => {
             gap: 16,
             marginLeft: -10,
           }}>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <TouchableOpacity onPress={() => RootNavigation.back()}>
             <MaterialIcon
               name="chevron-left"
               size="extraLarge"
@@ -165,7 +169,7 @@ const RegisterScreen = ({navigation}: any) => {
             />
           </TouchableOpacity>
           <Text style={{fontFamily, fontWeight: '600', fontSize: 13}}>
-            Cadastro
+            Voltar
           </Text>
         </View>
         <View
@@ -181,7 +185,7 @@ const RegisterScreen = ({navigation}: any) => {
               flexBasis: '40%',
             }}>
             <Text style={{fontFamily, fontWeight: '600', fontSize: 20}}>
-              Cadastro
+              Nova Senha
             </Text>
             <Text
               style={{
@@ -190,7 +194,7 @@ const RegisterScreen = ({navigation}: any) => {
                 fontSize: 14,
                 lineHeight: 22,
               }}>
-              Preencha os campos abaixo para criar a sua conta
+              Preencha os campos abaixo para criar a sua nova senha
             </Text>
           </View>
           <View
@@ -201,7 +205,7 @@ const RegisterScreen = ({navigation}: any) => {
               flexBasis: '50%',
             }}>
             <Image
-              source={require('../assets/images/login.png')}
+              source={require('../assets/images/new-password.png')}
               style={{width: 130, height: 130}}
             />
           </View>
@@ -211,30 +215,11 @@ const RegisterScreen = ({navigation}: any) => {
         validateOnMount={true}
         validateOnBlur={true}
         initialValues={{
-          name: '',
-          email: '',
           password: '',
           repeatPassword: '',
-          ddd: '',
-          phone: '',
         }}
         onSubmit={values => handleSubmitForm(values)}
         validationSchema={yup.object().shape({
-          name: yup.string().required('Insira seu nome'),
-          email: yup
-            .string()
-            .email('Insira um email válido')
-            .required('Insira seu email'),
-          ddd: yup
-            .string()
-            .min(2, 'DDD Inválido')
-            .max(2, 'DDD Inválido')
-            .required('Insira seu DDD'),
-          phone: yup
-            .string()
-            .min(7, 'Celular Inválido')
-            .max(12, 'Celular Inválido')
-            .required('Insira seu Celular'),
           password: yup
             .string()
             .min(8, 'A senha deve ter no mínimo 8 caracteres')
@@ -259,92 +244,6 @@ const RegisterScreen = ({navigation}: any) => {
           handleSubmit,
         }) => (
           <View style={styles.container}>
-            <View style={styles.row}>
-              <View
-                style={{
-                  ...styles.inputContainer,
-                  marginBottom: touched.name && errors.name ? 12 : 0,
-                }}>
-                <TextInput
-                  value={values.name}
-                  style={styles.input}
-                  onChangeText={handleChange('name')}
-                  onBlur={() => setFieldTouched('name')}
-                  placeholder="Nome completo"
-                />
-                <View style={styles.inputError}>
-                  {touched.name && errors.name && (
-                    <Text style={styles.inputErrorText}>{errors.name}</Text>
-                  )}
-                </View>
-              </View>
-            </View>
-            <View style={styles.row}>
-              <View
-                style={{
-                  ...styles.inputContainer,
-                  marginBottom: touched.email && errors.email ? 12 : 0,
-                }}>
-                <TextInput
-                  value={values.email}
-                  style={styles.input}
-                  onChangeText={handleChange('email')}
-                  onBlur={() => setFieldTouched('email')}
-                  placeholder="Email"
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                />
-                <View style={styles.inputError}>
-                  {touched.email && errors.email && (
-                    <Text style={styles.inputErrorText}>{errors.email}</Text>
-                  )}
-                </View>
-              </View>
-            </View>
-            <View style={styles.rowInline}>
-              <View
-                style={{
-                  ...styles.inputContainerInline,
-                  flexGrow: 0,
-                  width: 99,
-                  marginBottom: touched.ddd && errors.ddd ? 12 : 0,
-                }}>
-                <TextInput
-                  value={values.ddd}
-                  style={styles.input}
-                  onChangeText={handleChange('ddd')}
-                  onBlur={() => setFieldTouched('ddd')}
-                  placeholder="DDD"
-                  autoCapitalize="none"
-                  keyboardType="numeric"
-                />
-                <View style={styles.inputError}>
-                  {touched.ddd && errors.ddd && (
-                    <Text style={styles.inputErrorText}>{errors.ddd}</Text>
-                  )}
-                </View>
-              </View>
-              <View
-                style={{
-                  ...styles.inputContainerInline,
-                  marginBottom: touched.phone && errors.phone ? 12 : 0,
-                }}>
-                <TextInput
-                  value={values.phone}
-                  style={styles.input}
-                  onChangeText={handleChange('phone')}
-                  onBlur={() => setFieldTouched('phone')}
-                  placeholder="Celular"
-                  autoCapitalize="none"
-                  keyboardType="numeric"
-                />
-                <View style={styles.inputError}>
-                  {touched.phone && errors.phone && (
-                    <Text style={styles.inputErrorText}>{errors.phone}</Text>
-                  )}
-                </View>
-              </View>
-            </View>
             <View style={styles.row}>
               <View
                 style={{
@@ -393,7 +292,7 @@ const RegisterScreen = ({navigation}: any) => {
                     paddingRight: 50,
                   }}
                   onChangeText={handleChange('repeatPassword')}
-                  placeholder="Senha"
+                  placeholder="Repita a senha"
                   onBlur={() => setFieldTouched('repeatPassword')}
                   secureTextEntry={!repeatPasswordVisible}
                   autoCapitalize="none"
@@ -497,7 +396,7 @@ const RegisterScreen = ({navigation}: any) => {
                   fontFamily,
                   fontWeight: 'bold',
                 }}>
-                Criar conta
+                Alterar senha
               </Text>
             </TouchableOpacity>
           </View>
@@ -507,4 +406,4 @@ const RegisterScreen = ({navigation}: any) => {
   );
 };
 
-export default RegisterScreen;
+export default NewPasswordScreen;
