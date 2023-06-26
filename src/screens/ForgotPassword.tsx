@@ -20,12 +20,13 @@ import LoadingBar from '../components/loading-bar/LoadingBar';
 import * as RootNavigaton from '../utils/RootNavigation';
 import {useRoute} from '@react-navigation/native';
 
-const ForgotPasswordScreen = ({navigation}: any) => {
+const ForgotPasswordScreen = ({navigation, route}: any) => {
   const [showVerification, setShowVerification] = useState(false);
   const [phone, setPhone] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const route = useRoute();
+  const {name: routeName} = useRoute();
+  const {isResetPassword = false} = route?.params || {};
 
   const handleSubmitForm = async (_values: any) => {
     console.log(_values, '_values');
@@ -39,7 +40,6 @@ const ForgotPasswordScreen = ({navigation}: any) => {
         setPhone(_phone);
         setShowVerification(true);
       }
-      console.log(response.status);
     } catch (err) {
       console.log(JSON.stringify(err), 'err');
     } finally {
@@ -54,7 +54,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
     setIsError(false);
     setIsLoading(false);
     setShowVerification(false);
-  }, [route.name]);
+  }, [routeName]);
 
   return (
     <ScrollView ref={scrollViewRef} contentContainerStyle={{flexGrow: 1}}>
@@ -78,7 +78,12 @@ const ForgotPasswordScreen = ({navigation}: any) => {
             gap: 16,
             marginLeft: -10,
           }}>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <TouchableOpacity
+            onPress={() =>
+              isResetPassword
+                ? RootNavigaton.back()
+                : navigation.navigate('Login')
+            }>
             <MaterialIcon
               name="chevron-left"
               size="extraLarge"
@@ -86,7 +91,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
             />
           </TouchableOpacity>
           <Text style={{fontFamily, fontWeight: '700', fontSize: 13}}>
-            Esqueci minha senha
+            {isResetPassword ? 'Editar Perfil' : 'Esqueci minha senha'}
           </Text>
         </View>
         {showVerification ? (
@@ -124,7 +129,9 @@ const ForgotPasswordScreen = ({navigation}: any) => {
                   gap: 4,
                 }}>
                 <Text style={{fontFamily, fontWeight: '600', fontSize: 20}}>
-                  Esqueci minha senha
+                  {isResetPassword
+                    ? 'Alterar minha senha'
+                    : 'Esqueci minha senha'}
                 </Text>
                 <Text
                   style={{
@@ -133,8 +140,9 @@ const ForgotPasswordScreen = ({navigation}: any) => {
                     fontSize: 15,
                     lineHeight: 22,
                   }}>
-                  Insira um número de celular com DDD, que enviaremos um código
-                  para recuperação de senha.
+                  {isResetPassword
+                    ? 'Insira um número de celular com DDD, que enviaremos um código para redefinição de senha.'
+                    : 'Insira um número de celular com DDD, que enviaremos um código para recuperação de senha.'}
                 </Text>
               </View>
             </View>
@@ -365,7 +373,7 @@ const ForgotPasswordVerifyCode = ({handleResetProcess, phone}: any) => {
         verificationCode.join(''),
       );
       if (response?.status === 200) {
-        RootNavigaton.navigate('NewPassword');
+        RootNavigaton.navigate('NewPassword', {phone});
       }
       console.log(response.status);
     } catch (err) {

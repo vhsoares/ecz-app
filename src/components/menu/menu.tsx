@@ -1,15 +1,19 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import MenuButton from './menuButton';
 import {Linking} from 'react-native';
 import * as RootNavigation from './../../utils/RootNavigation';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {getUser} from '../../utils/AuthToken';
+import {apiUrl} from '../../utils/api';
 
 const Menu = (props: any) => {
+  const [user, setUser] = useState() as any;
   const relampagoActive = require('../../assets/images/relampago-active.png');
   const relampagoInactive = require('../../assets/images/Lightning.png');
   const homeActive = require('../../assets/images/House.png');
   const homeInactive = require('../../assets/images/home-inactive.png');
+  const navigation = useNavigation();
 
   const gradientProps = {
     start: {x: 0, y: 0.5},
@@ -22,6 +26,19 @@ const Menu = (props: any) => {
   const handleButtonPress = (route: any) => {
     RootNavigation.navigate(route);
   };
+
+  const handleGetUser = async () => {
+    const response = await getUser();
+
+    console.log(response);
+    setUser(response);
+  };
+
+  useEffect(() => {
+    if (!user) {
+      handleGetUser();
+    }
+  }, [navigation, user]);
 
   return (
     <View
@@ -62,7 +79,9 @@ const Menu = (props: any) => {
           title={'comprar'}
           onPress={() => handleButtonPress('Categories')}
           linearGradient={route.name === 'Categories' ? active : inactive}
+          active={route.name === 'Categories'}
           image={require('../../assets/images/Purse.png')}
+          icon="purse"
         />
 
         {/* <MenuButton
@@ -91,8 +110,19 @@ const Menu = (props: any) => {
           onPress={() => handleButtonPress('Profile')}
           linearGradient={route.name === 'Profile' ? active : inactive}
           active={route.name === 'Profile'}
-          icon="account"
-          imageWidth={15}
+          icon={!user?.picture && 'account'}
+          imageWidth={30}
+          imageHeight={30}
+          imageRadius={50}
+          image={
+            user?.picture
+              ? {
+                  uri: `${user?.picture?.includes('http') ? '' : apiUrl}${
+                    user?.picture
+                  }`,
+                }
+              : null
+          }
         />
       </View>
     </View>

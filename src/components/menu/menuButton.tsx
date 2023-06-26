@@ -1,20 +1,21 @@
-import {View, Image, ImageSourcePropType} from 'react-native';
+import {View, Image} from 'react-native';
 import {Button} from '@rneui/base';
 import LinearGradient from 'react-native-linear-gradient';
 import {MaterialIcon} from '../icon/icon';
 
 type MenuButtonProps = {
   onPress: any;
-  image?: ImageSourcePropType;
+  image?: any;
   imageWidth?: number;
   imageHeight?: number;
+  imageRadius?: number;
   title: string;
   linearGradient: {
     colors: Array<string>;
     start: {x: number; y: number};
     end: {x: number; y: number};
   };
-  icon?: string;
+  icon?: string | boolean;
   active?: boolean;
 };
 
@@ -25,6 +26,7 @@ const MenuButton = ({
   title,
   imageWidth = 25,
   imageHeight = 25,
+  imageRadius = 0,
   active = false,
   icon,
 }: MenuButtonProps) => {
@@ -62,7 +64,11 @@ const MenuButton = ({
         ) : image ? (
           <Image
             source={image}
-            style={{width: imageWidth, height: imageHeight}}
+            style={{
+              width: imageWidth,
+              height: imageHeight,
+              borderRadius: imageRadius || 0,
+            }}
           />
         ) : null}
       </Button>

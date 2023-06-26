@@ -29,6 +29,10 @@ const SplashScreen = ({navigation, route}: any) => {
     }
   }, [navigation, route?.params?.loggingIn]);
 
+  useEffect(() => {
+    console.log('mounting...', navigation);
+  }, []);
+
   return (
     <View style={styles.container}>
       <LinearGradient

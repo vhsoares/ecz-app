@@ -8,110 +8,10 @@ import * as yup from 'yup';
 import {createUser} from '../services/auth';
 import {fontFamily} from '../styles/font';
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#F6F3F6',
-    flexGrow: 2,
-    borderRadius: 40,
-    width: '100%',
-    paddingHorizontal: 24,
-    paddingVertical: 40,
-    gap: 14,
-  },
-  inputContainer: {
-    backgroundColor: '#F6F3F7',
-    shadowColor: '#45254E',
-    shadowOffset: {
-      width: -4,
-      height: -4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
-    borderRadius: 8,
-    width: '100%',
-  },
-  inputContainerInline: {
-    backgroundColor: '#F6F3F7',
-    shadowColor: '#45254E',
-    shadowOffset: {
-      width: -4,
-      height: -4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
-    borderRadius: 8,
-    flexGrow: 1,
-    maxHeight: 56,
-  },
-  input: {
-    height: 56,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontFamily,
-    fontWeight: '400',
-    color: '#23052C',
-    backgroundColor: '#F6F3F6',
-    borderRadius: 8,
-  },
-  inputError: {
-    position: 'absolute',
-    bottom: -18,
-  },
-  inputErrorText: {
-    fontSize: 12,
-    color: '#F0614D',
-    fontWeight: '500',
-  },
-  row: {
-    width: '100%',
-    gap: 14,
-  },
-  rowInline: {
-    width: '100%',
-    gap: 14,
-    flexDirection: 'row',
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: '#23052C',
-    fontFamily: fontFamily,
-    opacity: 1,
-  },
-  checkbox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 12,
-  },
-  iconContainer: {
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: '#8612A7',
-    borderRadius: 6,
-    padding: 2,
-    backgroundColor: 'transparent',
-  },
-  requirementsText: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 14,
-    color: '#A69CA9',
-    fontFamily,
-    fontSize: 15,
-    fontWeight: '500',
-  },
-  iconVisibility: {
-    position: 'absolute',
-    right: 12,
-    top: 18,
-  },
-});
-
 const RegisterScreen = ({navigation}: any) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [repeatPasswordVisible, setRepeatPasswordVisible] = useState(false);
+  const [hasError, setHasError] = useState(null);
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -122,18 +22,19 @@ const RegisterScreen = ({navigation}: any) => {
   };
 
   const handleSubmitForm = async (values: any) => {
-    console.log(values, 'values');
+    setHasError(null);
 
     try {
       const response = await createUser(values);
-
-      console.log(response, 'response');
-
       if (response?.data?.id) {
         navigation.replace('Login');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.log(err, 'err');
+      setHasError(
+        err?.response?.data?.message ||
+          'Algo deu errado. Por favor, tente novamente.',
+      );
     }
   };
 
@@ -500,11 +401,116 @@ const RegisterScreen = ({navigation}: any) => {
                 Criar conta
               </Text>
             </TouchableOpacity>
+
+            {hasError ? (
+              <Text style={styles.inputErrorText}>{hasError}</Text>
+            ) : null}
           </View>
         )}
       </Formik>
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#F6F3F6',
+    flexGrow: 2,
+    borderRadius: 40,
+    width: '100%',
+    paddingHorizontal: 24,
+    paddingVertical: 40,
+    gap: 14,
+  },
+  inputContainer: {
+    backgroundColor: '#F6F3F7',
+    shadowColor: '#45254E',
+    shadowOffset: {
+      width: -4,
+      height: -4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
+    borderRadius: 8,
+    width: '100%',
+  },
+  inputContainerInline: {
+    backgroundColor: '#F6F3F7',
+    shadowColor: '#45254E',
+    shadowOffset: {
+      width: -4,
+      height: -4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
+    borderRadius: 8,
+    flexGrow: 1,
+    maxHeight: 56,
+  },
+  input: {
+    height: 56,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontFamily,
+    fontWeight: '400',
+    color: '#23052C',
+    backgroundColor: '#F6F3F6',
+    borderRadius: 8,
+  },
+  inputError: {
+    position: 'absolute',
+    bottom: -18,
+  },
+  inputErrorText: {
+    fontSize: 12,
+    color: '#F0614D',
+    fontWeight: '500',
+  },
+  row: {
+    width: '100%',
+    gap: 14,
+  },
+  rowInline: {
+    width: '100%',
+    gap: 14,
+    flexDirection: 'row',
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#23052C',
+    fontFamily: fontFamily,
+    opacity: 1,
+  },
+  checkbox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 12,
+  },
+  iconContainer: {
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: '#8612A7',
+    borderRadius: 6,
+    padding: 2,
+    backgroundColor: 'transparent',
+  },
+  requirementsText: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 14,
+    color: '#A69CA9',
+    fontFamily,
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  iconVisibility: {
+    position: 'absolute',
+    right: 12,
+    top: 18,
+  },
+});
 
 export default RegisterScreen;

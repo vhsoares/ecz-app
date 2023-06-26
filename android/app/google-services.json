@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "147669695071",
-    "project_id": "economizei-app-10f25",
-    "storage_bucket": "economizei-app-10f25.appspot.com"
+    "project_number": "12540168183",
+    "project_id": "economizei-747fd",
+    "storage_bucket": "economizei-747fd.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:147669695071:android:49d44f0e06deffb272f9ea",
+        "mobilesdk_app_id": "1:12540168183:android:2691ee54441e34020f90f2",
         "android_client_info": {
           "package_name": "com.economizei"
         }
       },
       "oauth_client": [
         {
-          "client_id": "147669695071-sp4lihsqq7bgehleshg06eo6nkvrl4ku.apps.googleusercontent.com",
+          "client_id": "12540168183-e1b8fb9olju2o18j5i6ovscpcfne1e0b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.economizei",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "12540168183-c81gj9tmmhjv318bctciqd1tuqm98c5l.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD6Y5cgifVR0vxv7uqiFkTNQ8stRK9rth4"
+          "current_key": "AIzaSyBJHaNwohiaToqJ-p5yG5mbBB00tkH-XsQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "147669695071-sp4lihsqq7bgehleshg06eo6nkvrl4ku.apps.googleusercontent.com",
+              "client_id": "12540168183-c81gj9tmmhjv318bctciqd1tuqm98c5l.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

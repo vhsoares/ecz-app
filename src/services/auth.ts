@@ -73,6 +73,18 @@ export const signIn = (user: any) => {
   });
 };
 
+export const signInGoogle = (user: any) => {
+  if (__DEV__) {
+    console.log(user, apiUrl);
+  }
+
+  return axios.post(apiUrl + 'authenticate/login-app-google', user, {
+    headers: {
+      'x-access-token': apiToken,
+    },
+  });
+};
+
 export const me = (id: any) => {
   if (__DEV__) {
     console.log(id, apiUrl);

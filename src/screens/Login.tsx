@@ -7,10 +7,17 @@ import {MaterialIcon} from '../components/icon/icon';
 
 import {Formik} from 'formik';
 import * as yup from 'yup';
-import {signIn} from '../services/auth';
+import {signIn, signInGoogle} from '../services/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {button} from '../styles/button';
 import {fontFamily} from '../styles/font';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
+
+const webClientId =
+  '12540168183-c81gj9tmmhjv318bctciqd1tuqm98c5l.apps.googleusercontent.com';
 
 const LoginScreen = ({navigation}: any) => {
   const [rememberMe, setRememberMe] = useState(true);
@@ -31,7 +38,7 @@ const LoginScreen = ({navigation}: any) => {
         await AsyncStorage.setItem('user', JSON.stringify(user.data));
 
         setTimeout(() => {
-          navigation.navigate('Splash', {loggingIn: true});
+          navigation.replace('Splash', {loggingIn: true});
           console.log(user?.data?.id, 'SUCCESS', 'isLoading:', isLoading);
 
           if (resetForm) {
@@ -51,10 +58,55 @@ const LoginScreen = ({navigation}: any) => {
 
   useEffect(() => {
     setIsLoading(false);
+    GoogleSignin.configure({
+      scopes: ['profile', 'email'],
+      webClientId,
+    });
   }, []);
 
   const handleRememberMeToggle = () => {
     setRememberMe(!rememberMe);
+  };
+
+  const handleSignInGoogle = async () => {
+    GoogleSignin.hasPlayServices()
+      .then(hasPlayService => {
+        if (hasPlayService) {
+          GoogleSignin.signIn()
+            .then(async userInfo => {
+              console.log(userInfo, 'done');
+              try {
+                const user = userInfo.user;
+                const response = await signInGoogle(user);
+                console.log(response.data);
+
+                if (response.data?.id) {
+                  await AsyncStorage.setItem('token', response.data.token);
+                  await AsyncStorage.setItem(
+                    'user',
+                    JSON.stringify(response.data),
+                  );
+
+                  setTimeout(() => {
+                    navigation.replace('Splash', {loggingIn: true});
+                  }, 1000);
+
+                  setTimeout(() => {
+                    setIsLoading(false);
+                  }, 2500);
+                }
+              } catch (err) {
+                console.log(err, 'err');
+              }
+            })
+            .catch(e => {
+              console.log('ERROR IS: ' + JSON.stringify(e));
+            });
+        }
+      })
+      .catch(e => {
+        console.log('ERROR IS: ' + JSON.stringify(e));
+      });
   };
 
   return (
@@ -266,7 +318,7 @@ const LoginScreen = ({navigation}: any) => {
                     <View
                       style={{flexDirection: 'row', gap: 20, marginBottom: 24}}>
                       <TouchableOpacity
-                        onPress={() => console.log('login google')}
+                        onPress={handleSignInGoogle}
                         style={{
                           alignContent: 'center',
                           justifyContent: 'center',

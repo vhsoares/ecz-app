@@ -20,11 +20,15 @@ interface IUser {
   phone: string;
   id: string;
   picture: string;
+  isGoogle: boolean;
+  hasCreatedPassword: boolean;
 }
 
 const EditProfileScreen = ({navigation}: any) => {
   const [user, setUser] = useState({} as IUser);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [hasError, setHasError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -32,6 +36,8 @@ const EditProfileScreen = ({navigation}: any) => {
 
   const handleSubmitForm = async (values: any) => {
     console.log(values, 'values');
+    setIsLoading(true);
+    setHasError(null);
 
     try {
       const response = await editUser({...values, id: user.id});
@@ -40,13 +46,16 @@ const EditProfileScreen = ({navigation}: any) => {
 
       if (response?.data) {
         await AsyncStorage.setItem('user', JSON.stringify(response.data));
-
-        setTimeout(() => {
-          navigation.replace('Profile');
-        }, 1000);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.log(err, 'err');
+
+      setHasError(
+        err?.response?.data?.message ||
+          'Algo deu errado. Por favor, tente novamente.',
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -70,7 +79,32 @@ const EditProfileScreen = ({navigation}: any) => {
           }
         } catch (err) {
           // Handle error
-          console.log(err, 'err');
+          console.log(err, 'err first try');
+
+          setTimeout(async () => {
+            const _avatarData = new FormData();
+            _avatarData.append('picture', {
+              uri: response.assets[0].uri,
+              name: response.assets[0].fileName,
+              type: response.assets[0].type,
+            });
+
+            try {
+              const res = await updateAvatar(user.id, avatarData);
+              console.log(res.data, 'res');
+              if (res?.data) {
+                await AsyncStorage.setItem('user', JSON.stringify(res.data));
+                console.log(`${apiUrl}${user.picture}`);
+                setUser(prevValue => ({
+                  ...prevValue,
+                  picture: res.data.picture,
+                }));
+              }
+            } catch (_err) {
+              // Handle error
+              console.log(_err, 'err second try');
+            }
+          }, 2000);
         }
       }
     });
@@ -78,18 +112,19 @@ const EditProfileScreen = ({navigation}: any) => {
 
   useEffect(() => {
     const handleGetUser = async () => {
+      setIsLoading(true);
       const currentUser = await getUser();
 
       console.log(currentUser, 'currentUser');
       if (currentUser) {
         setUser(currentUser);
       }
-
-      console.log(user?.name);
+      setIsLoading(false);
+      setHasError(null);
     };
 
     handleGetUser();
-  }, []);
+  }, [user?.hasCreatedPassword]);
 
   return (
     <Layout>
@@ -113,7 +148,11 @@ const EditProfileScreen = ({navigation}: any) => {
           <View>
             {user.picture ? (
               <Image
-                source={{uri: `${apiUrl}${user.picture}`}}
+                source={{
+                  uri: user.picture?.includes('http')
+                    ? user.picture
+                    : `${apiUrl}${user.picture}`,
+                }}
                 style={{
                   width: 120,
                   height: 120,
@@ -148,7 +187,7 @@ const EditProfileScreen = ({navigation}: any) => {
               email: user?.email,
               password: '',
               ddd: user?.ddd,
-              phone: user?.phone,
+              phone: user?.phone?.substring(2),
             }}
             onSubmit={values => handleSubmitForm(values)}
             validationSchema={yup.object().shape({
@@ -167,15 +206,19 @@ const EditProfileScreen = ({navigation}: any) => {
                 .min(7, 'Celular Inválido')
                 .max(12, 'Celular Inválido')
                 .required('Insira seu Celular'),
-              password: yup
-                .string()
-                .min(8, 'A senha deve ter no mínimo 8 caracteres')
-                .max(20, 'A senha deve ter no máximo 20 caracteres')
-                .matches(
-                  /^(?=.*[A-Z])(?=.*\d)(?=.*[#*&@]).*$/,
-                  'A senha deve conter os requisitos abaixo',
-                )
-                .required('Insira uma senha'),
+              password:
+                !user?.isGoogle ||
+                (user?.isGoogle && user.hasCreatedPassword && user.phone)
+                  ? yup
+                      .string()
+                      .min(8, 'A senha deve ter no mínimo 8 caracteres')
+                      .max(20, 'A senha deve ter no máximo 20 caracteres')
+                      .matches(
+                        /^(?=.*[A-Z])(?=.*\d)(?=.*[#*&@]).*$/,
+                        'A senha deve conter os requisitos abaixo',
+                      )
+                      .required('Insira uma senha')
+                  : yup.string(),
             })}>
             {({
               values,
@@ -280,50 +323,106 @@ const EditProfileScreen = ({navigation}: any) => {
                     </View>
                   </View>
                 </View>
-                <Text style={styles.label}>Senha</Text>
-                <View style={styles.row}>
-                  <View
-                    style={{
-                      ...styles.inputContainer,
-                      marginBottom:
-                        touched.password && errors.password ? 12 : 0,
-                    }}>
-                    <TextInput
-                      value={values.password}
-                      style={{
-                        ...styles.input,
-                        paddingRight: 50,
-                      }}
-                      onChangeText={handleChange('password')}
-                      placeholder="Senha"
-                      onBlur={() => setFieldTouched('password')}
-                      secureTextEntry={!passwordVisible}
-                      autoCapitalize="none"
-                    />
-                    <TouchableOpacity
-                      style={styles.iconVisibility}
-                      onPress={togglePasswordVisibility}>
-                      <MaterialIcon
-                        name={
-                          !passwordVisible ? 'eye-outline' : 'eye-off-outline'
-                        }
-                        size="large"
-                        color="#8612A7"
-                      />
-                    </TouchableOpacity>
-                    <View style={styles.inputError}>
-                      {touched.password && errors.password && (
-                        <Text style={styles.inputErrorText}>
-                          {errors.password}
+
+                {!user?.isGoogle ||
+                (user?.isGoogle && user.hasCreatedPassword && user.phone) ? (
+                  <>
+                    <Text style={styles.label}>Senha</Text>
+                    <View style={styles.row}>
+                      <View
+                        style={{
+                          ...styles.inputContainer,
+                          marginBottom:
+                            touched.password && errors.password ? 12 : 0,
+                        }}>
+                        <TextInput
+                          value={values.password}
+                          style={{
+                            ...styles.input,
+                            paddingRight: 50,
+                          }}
+                          onChangeText={handleChange('password')}
+                          placeholder="Senha"
+                          onBlur={() => setFieldTouched('password')}
+                          secureTextEntry={!passwordVisible}
+                          autoCapitalize="none"
+                        />
+                        <TouchableOpacity
+                          style={styles.iconVisibility}
+                          onPress={togglePasswordVisibility}>
+                          <MaterialIcon
+                            name={
+                              !passwordVisible
+                                ? 'eye-outline'
+                                : 'eye-off-outline'
+                            }
+                            size="large"
+                            color="#8612A7"
+                          />
+                        </TouchableOpacity>
+                        <View style={styles.inputError}>
+                          {touched.password && errors.password && (
+                            <Text style={styles.inputErrorText}>
+                              {errors.password}
+                            </Text>
+                          )}
+                        </View>
+                      </View>
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate('ForgotPassword', {
+                            isResetPassword: true,
+                          })
+                        }>
+                        <Text
+                          style={{
+                            color: '#8612A7',
+                            fontFamily: fontFamily,
+                            fontWeight: 'bold',
+                            alignSelf: 'flex-start',
+                            justifyContent: 'flex-start',
+                            textAlign: 'left',
+                            alignItems: 'flex-start',
+                            fontSize: 12,
+                          }}>
+                          Alterar senha
                         </Text>
-                      )}
+                      </TouchableOpacity>
                     </View>
+                  </>
+                ) : null}
+
+                {user?.isGoogle && !user.hasCreatedPassword ? (
+                  <View style={styles.row}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate('ForgotPassword', {
+                          isResetPassword: true,
+                        })
+                      }>
+                      <Text
+                        style={{
+                          color: '#8612A7',
+                          fontFamily: fontFamily,
+                          fontWeight: 'bold',
+                          alignSelf: 'flex-start',
+                          justifyContent: 'flex-start',
+                          textAlign: 'left',
+                          alignItems: 'flex-start',
+                          fontSize: 14,
+                          marginTop: 30,
+                        }}>
+                        Cadastrar primeira senha
+                      </Text>
+                    </TouchableOpacity>
                   </View>
-                </View>
+                ) : null}
+
                 <TouchableOpacity
                   onPress={handleSubmit}
                   style={{
-                    backgroundColor: isValid ? '#8612A7' : '#F4E8F8',
+                    backgroundColor:
+                      isValid && !isLoading ? '#8612A7' : '#F4E8F8',
                     width: '100%',
                     paddingVertical: 12,
                     borderRadius: 8,
@@ -333,17 +432,21 @@ const EditProfileScreen = ({navigation}: any) => {
                     justifyContent: 'center',
                     marginTop: 20,
                   }}
-                  disabled={!isValid}>
+                  disabled={!isValid || isLoading}>
                   <Text
                     style={{
                       textAlign: 'center',
-                      color: isValid ? '#FFF' : '#A69CA9',
+                      color: isValid && !isLoading ? '#FFF' : '#A69CA9',
                       fontFamily,
                       fontWeight: 'bold',
                     }}>
-                    Salvar alterações
+                    {isLoading ? 'Carregando...' : 'Salvar alterações'}
                   </Text>
                 </TouchableOpacity>
+
+                {hasError ? (
+                  <Text style={styles.inputErrorText}>{hasError}</Text>
+                ) : null}
               </View>
             )}
           </Formik>

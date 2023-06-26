@@ -63,7 +63,11 @@ const ProfileScreen = ({navigation}: any) => {
           <View>
             {user.picture ? (
               <Image
-                source={{uri: `${apiUrl}${user.picture}`}}
+                source={{
+                  uri: user.picture?.includes('http')
+                    ? user.picture
+                    : `${apiUrl}${user.picture}`,
+                }}
                 style={{
                   width: 100,
                   height: 100,

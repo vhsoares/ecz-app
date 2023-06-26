@@ -11,20 +11,29 @@ import {MaterialIcon} from '../components/icon/icon';
 import {doComment} from '../services/post';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {apiUrl} from '../utils/api';
+import {getUser} from '../utils/AuthToken';
+import {useRoute} from '@react-navigation/native';
 
 const ProductScreen = ({route = {}, navigation}: any) => {
   const [product, setProduct]: any = useState();
+  const [user, setUser] = useState({} as any);
   const {id} = route.params || {};
+  const {name: routeName} = useRoute();
   const [commentInput, setCommentInput] = useState('');
   const commentInputRef = useRef<TextInput>(null);
 
   useEffect(() => {
-    const getProducto = async () => {
+    const handleGetProduct = async () => {
       const result = await getProduct(id);
+      const _user = await getUser();
+
+      if (_user?.id) {
+        setUser(_user);
+      }
       setProduct(result.data.product);
     };
-    getProducto();
-  }, [id, route]);
+    handleGetProduct();
+  }, [id, route, routeName]);
 
   const handleChange = (text: string) => {
     setCommentInput(text);
@@ -32,10 +41,12 @@ const ProductScreen = ({route = {}, navigation}: any) => {
 
   const handleComment = async () => {
     try {
-      const result = await doComment(commentInput, product?.id);
+      const newComment = commentInput;
+      const result = await doComment(newComment, product?.id);
 
       if (result?.status === 201) {
         setCommentInput('');
+        setProduct({...product, comments: [...product.comments, result.data]});
         navigation.navigate('Product', {id: product.id});
       }
     } catch (e: any) {
@@ -176,7 +187,7 @@ const ProductScreen = ({route = {}, navigation}: any) => {
                 </Text>
                 <MenuButton
                   onPress={() => {}}
-                  image={require('../assets/images/Love.png')}
+                  image={require('../assets/images/icon-love.png')}
                   imageWidth={20}
                   imageHeight={17.5}
                   title={'like'}
@@ -221,8 +232,23 @@ const ProductScreen = ({route = {}, navigation}: any) => {
               </Text>
 
               <View style={styles.container}>
-                <View style={styles.image}>
-                  <MaterialIcon name="account" size="large" color="#F1F1F1" />
+                <View
+                  style={{
+                    ...styles.image,
+                    backgroundColor: user?.picture ? 'transparent' : '#8612A7',
+                  }}>
+                  {user?.picture ? (
+                    <Image
+                      source={{uri: `${apiUrl}${user.picture}`}}
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 25,
+                      }}
+                    />
+                  ) : (
+                    <MaterialIcon name="account" size="large" color="#F1F1F1" />
+                  )}
                 </View>
                 <View
                   style={{
@@ -236,7 +262,13 @@ const ProductScreen = ({route = {}, navigation}: any) => {
                     placeholder="Escreva um comentário..."
                     autoCapitalize="none"
                   />
-                  <TouchableOpacity style={styles.icon} onPress={handleComment}>
+                  <TouchableOpacity
+                    style={{
+                      ...styles.icon,
+                      opacity: !commentInput?.length ? 0.5 : 1,
+                    }}
+                    onPress={handleComment}
+                    disabled={!commentInput?.length}>
                     <MaterialIcon
                       name="chevron-right"
                       size="extraLarge"
